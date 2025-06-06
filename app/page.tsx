@@ -13,12 +13,12 @@ export default function Home() {
         textAlign: "center",
       }}
     >
-      <h1 style={{ fontSize: "2.5rem" }}>Brendan Finan's website</h1>
+      <h1 style={{ fontSize: "2.5rem" }}>Brendan Finan&apos;s website</h1>
  
       {showManifestMsg && (
         <div>
           <p style={{ fontSize: "1.1rem" }}>
-            If you're reading this, we probably met (or could meet!) at{" "}
+            If you&apos;re reading this, we probably met (or could meet!) at{" "}
             <a
               href="https://manifest.is"
               target="_blank"
@@ -30,7 +30,7 @@ export default function Home() {
             .
           </p>
           <p style={{ fontSize: "1.1rem" }}>
-            If we haven't met yet, here's a link to my {" "}
+            If we haven&apos;t met yet, here&apos;s a link to my {" "}
             <a
               href="https://www.writehaven.space/e/manifest-2025/profiles/brendan-finan"
               target="_blank"
