@@ -29,20 +29,6 @@ export default function Home() {
           Discord
         </a>
         <a
-          href="https://manifold.markets/BrendanFinan"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: "#0070f3", textDecoration: "underline", marginLeft: "1.5rem" }}
-        >
-          Manifold
-        </a>
-        <a
-          href="mailto:brendanfinan@proton.me"
-          style={{ color: "#0070f3", textDecoration: "underline", marginLeft: "1.5rem" }}
-        >
-          Email
-        </a>
-        <a
           href="https://twitter.com/brendanfinan"
           target="_blank"
           rel="noopener noreferrer"
@@ -73,6 +59,14 @@ export default function Home() {
           style={{ color: "#0070f3", textDecoration: "underline", marginLeft: "1.5rem" }}
         >
           GitHub
+        </a>
+                <a
+          href="https://manifold.markets/BrendanFinan"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "#0070f3", textDecoration: "underline", marginLeft: "1.5rem" }}
+        >
+          Manifold Markets
         </a>
       </div>
     </div>
