@@ -15,6 +15,13 @@ export default function Home() {
     >
       <h1 style={{ fontSize: "2.5rem" }}>Brendan Finan&apos;s website</h1>
       <h2>I&apos;m a software developer and runner, currently based in Des Moines, Iowa.</h2>
+      <p style={{ fontSize: "1.1rem", marginTop: "1rem" }}>
+        Here&apos;s what I&apos;m working on{" "}
+        <a href="/now" style={{ color: "#0070f3", textDecoration: "underline" }}>
+          now
+        </a>
+        .
+      </p>
       {/* Social links block */}
       <div style={{ marginTop: "2rem", fontSize: "1.1rem" }}>
         <div style={{ fontSize: "1.3rem", marginBottom: "0.5rem", fontWeight: 500 }}>
