@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 
 export default function Home() {
@@ -13,8 +14,8 @@ export default function Home() {
         textAlign: "center",
       }}
     >
-      <h1 style={{ fontSize: "2.5rem" }}>Brendan Finan&apos;s website</h1>
-      <h2>I&apos;m a software developer and <a href="/run">runner</a>, currently based in Des Moines, Iowa.</h2>
+      <h1 style={{ fontSize: "2.5rem" }}>Brendan Finan</h1>
+      <h2>I&apos;m a software developer and <Link href="/run" style={{ color: "#0070f3", textDecoration: "underline" }}>runner</Link>, currently based in Des Moines, Iowa.</h2>
       <p style={{ fontSize: "1.1rem", marginTop: "1rem" }}>
         Here&apos;s what I&apos;m working on{" "}
         <a href="/now" style={{ color: "#0070f3", textDecoration: "underline" }}>
