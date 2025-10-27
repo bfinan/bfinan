@@ -3,7 +3,7 @@
 git -c http.sslVerify=false pull
 git add .
 git status
-git commit -m "sneed"
+git commit -m "new commit"
 git -c http.sslVerify=false push 
 
 

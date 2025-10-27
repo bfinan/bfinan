@@ -15,7 +15,38 @@ export default function RunPage() {
       }}
     >
       <h1 style={{ fontSize: "2.2rem" }}>Running</h1>
-            <div style={{ marginTop: "2rem", maxWidth: 500 }}>
+
+        <div style={{ marginTop: "2rem", maxWidth: 500 }}>
+        <h2 style={{ fontSize: "1.3rem" }}>Des Moines Area Run Clubs</h2>
+        <ul style={{ textAlign: "left", margin: "0 auto", fontSize: "1.1rem" }}>
+
+           <li>
+            <Link href="https://www.fleetfeet.com/s/desmoines/weekly%20runs/weekly-social-runs?srsltid=AfmBOorsE_Zn4EujvtD_RTCDSp8yOZqniPHlo3KcX4PsaqQcm4VFDbMY" target="_blank" rel="noopener noreferrer" style={{ color: "#0070f3", textDecoration: "underline" }}>
+              Fleet Feet Social Run
+            </Link>
+          </li>
+          I highly recommend the Thursday Fleet Feet social run! This is the best way to meet other runners in the Des Moines area. <br />
+
+
+          <li>
+            <Link href="https://www.capitalstriders.org/" target="_blank" rel="noopener noreferrer" style={{ color: "#0070f3", textDecoration: "underline" }}>
+              Capital Striders
+            </Link>
+            <br></br>
+            This is the more "official" Des Moines running club. Great way to meet people to train and race with.
+          </li>
+
+          <li>
+            <Link href="https://www.facebook.com/profile.php?id=100092743729094" target="_blank" rel="noopener noreferrer" style={{ color: "#0070f3", textDecoration: "underline" }}>
+              515 Run Club
+            </Link>
+            <br></br>
+          </li>
+
+        </ul>
+      </div>
+
+        <div style={{ marginTop: "2rem", maxWidth: 500 }}>
         <h2 style={{ fontSize: "1.3rem" }}>Recommended books</h2>
         <ul style={{ textAlign: "left", margin: "0 auto", fontSize: "1.1rem" }}>
 
@@ -42,6 +73,16 @@ export default function RunPage() {
         <h2 style={{ fontSize: "1.3rem" }}>Recommended links</h2>
         <ul style={{ textAlign: "left", margin: "0 auto", fontSize: "1.1rem" }}>
 
+          <li>
+            <Link href="https://www.halhigdon.com/training/marathon-training/" target="_blank" rel="noopener noreferrer" style={{ color: "#0070f3", textDecoration: "underline" }}>
+              Higdon's Marathon Training Plans
+            </Link>
+          </li>
+          <li>
+            <Link href="https://defy.org/hacks/calendarhack" target="_blank" rel="noopener noreferrer" style={{ color: "#0070f3", textDecoration: "underline" }}>
+              Marathon training plans with automatic calendar scheduling
+            </Link>
+          </li>
           <li>
             <Link href="https://runbundle.com/tools/weight-vs-pace-calculator" target="_blank" rel="noopener noreferrer" style={{ color: "#0070f3", textDecoration: "underline" }}>
               Weight vs. Pace Calculator

@@ -17,7 +17,7 @@ export default function NowPage() {
       <h1 style={{ fontSize: "2.2rem" }}>What I'm Working On Now</h1>
       <div style={{ marginTop: "2rem", maxWidth: 600 }}>
         <li>
-            Training for the <Link href="https://www.desmoinesmarathon.com/" target="_blank" rel="noopener noreferrer" style={{ color: "#0070f3", textDecoration: "underline" }}>Des Moines Marathon </Link>on October 19
+            Training for the <Link href="https://www.marathon.tokyo/en/" target="_blank" rel="noopener noreferrer" style={{ color: "#0070f3", textDecoration: "underline" }}>Tokyo Marathon</Link> on March 1, 2026
         </li>
         <li>
             Polishing up <Link href="https://sokalink.com" target="_blank" rel="noopener noreferrer" style={{ color: "#0070f3", textDecoration: "underline" }}>Sokalink</Link> and learning more about modern web development
@@ -27,9 +27,6 @@ export default function NowPage() {
         </li>
         <li>
             Working on a couple of other side projects
-        </li>
-        <li>
-            Reading fiction with my book club - currently True Grit by Charles Portis
         </li>
         <li>
             Reading non-fiction, usually pop psychology books - currently "Never Split the Difference" by Chris Voss
