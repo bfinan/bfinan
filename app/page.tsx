@@ -5,6 +5,7 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div
+      className="px-4 sm:px-6"
       style={{
         display: "flex",
         flexDirection: "column",
@@ -14,11 +15,11 @@ export default function Home() {
         textAlign: "center",
       }}
     >
-      <h1 style={{ fontSize: "2.5rem" }}>Brendan Finan</h1>
-      <h2>I&apos;m a software developer and <Link href="/run" style={{ color: "#0070f3", textDecoration: "underline" }}>runner</Link>, currently based in Des Moines, Iowa.</h2>
+      <h1 className="text-3xl sm:text-4xl">Brendan Finan</h1>
+      <h2 className="px-2 sm:px-0 max-w-2xl">I&apos;m a software developer and <Link href="/run" className="text-blue-600 dark:text-blue-400 underline">runner</Link>, currently based in Des Moines, Iowa.</h2>
       <p style={{ fontSize: "1.1rem", marginTop: "1rem" }}>
         Here&apos;s what I&apos;m working on{" "}
-        <a href="/now" style={{ color: "#0070f3", textDecoration: "underline" }}>
+        <a href="/now" className="text-blue-600 dark:text-blue-400 underline">
           now
         </a>
         .
@@ -28,54 +29,56 @@ export default function Home() {
         <div style={{ fontSize: "1.3rem", marginBottom: "0.5rem", fontWeight: 500 }}>
           Find me on:
         </div>
-        <a
-          href="https://discordapp.com/users/223324579391733770"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: "#0070f3", textDecoration: "underline", marginLeft: "1.5rem" }}
-        >
-          Discord
-        </a>
-        <a
-          href="https://twitter.com/brendanfinan"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: "#0070f3", textDecoration: "underline", marginLeft: "1.5rem" }}
-        >
-          Twitter
-        </a>
-        <a
-          href="https://www.linkedin.com/in/brendan-finan-77a09ab3/"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: "#0070f3", textDecoration: "underline", marginLeft: "1.5rem" }}
-        >
-          LinkedIn
-        </a>
-        <a
-          href="https://www.strava.com/athletes/52423920"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: "#0070f3", textDecoration: "underline", marginLeft: "1.5rem" }}
-        >
-          Strava
-        </a>
-        <a
-          href="https://github.com/bfinan"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: "#0070f3", textDecoration: "underline", marginLeft: "1.5rem" }}
-        >
-          GitHub
-        </a>
-                <a
-          href="https://manifold.markets/BrendanFinan"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: "#0070f3", textDecoration: "underline", marginLeft: "1.5rem" }}
-        >
-          Manifold Markets
-        </a>
+        <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-6 px-4">
+          <a
+            href="https://discordapp.com/users/223324579391733770"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 dark:text-blue-400 underline"
+          >
+            Discord
+          </a>
+          <a
+            href="https://twitter.com/brendanfinan"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 dark:text-blue-400 underline"
+          >
+            Twitter
+          </a>
+          <a
+            href="https://www.linkedin.com/in/brendan-finan-77a09ab3/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 dark:text-blue-400 underline"
+          >
+            LinkedIn
+          </a>
+          <a
+            href="https://www.strava.com/athletes/52423920"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 dark:text-blue-400 underline"
+          >
+            Strava
+          </a>
+          <a
+            href="https://github.com/bfinan"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 dark:text-blue-400 underline"
+          >
+            GitHub
+          </a>
+          <a
+            href="https://manifold.markets/BrendanFinan"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 dark:text-blue-400 underline"
+          >
+            Manifold Markets
+          </a>
+        </div>
       </div>
     </div>
   );
