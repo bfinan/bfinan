@@ -35,9 +35,6 @@ export default function NowPage() {
         <li>
            Brushing up on Spanish
         </li>
-        <li>
-            Reading non-fiction, usually pop psychology books - currently "The Defining Decade" by Meg Jay
-        </li>
       </div>
       <div style={{ marginTop: "2rem" }}>
         <Link href="/" className="text-blue-600 dark:text-blue-400 underline">
