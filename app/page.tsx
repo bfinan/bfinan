@@ -16,7 +16,7 @@ export default function Home() {
       }}
     >
       <h1 className="text-3xl sm:text-4xl">Brendan Finan</h1>
-      <h2 className="px-2 sm:px-0 max-w-2xl">I&apos;m a software developer and <Link href="/run" className="text-blue-600 dark:text-blue-400 underline">runner</Link>, currently based in Des Moines, Iowa.</h2>
+      <h2 className="px-2 sm:px-0 max-w-2xl">I&apos;m a <Link href="/software" className="text-blue-600 dark:text-blue-400 underline">software developer</Link> and <Link href="/run" className="text-blue-600 dark:text-blue-400 underline">runner</Link>, currently based in Des Moines, Iowa.</h2>
       <p style={{ fontSize: "1.1rem", marginTop: "1rem" }}>
         Here&apos;s what I&apos;m working on{" "}
         <a href="/now" className="text-blue-600 dark:text-blue-400 underline">
