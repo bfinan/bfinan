@@ -45,7 +45,7 @@ export default function SoftwarePage() {
           <li>
             <Link href="https://sokalink.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">
               Sokalink
-            </Link> - One-click social link sharing feed and browser extension
+            </Link> - One-click social link sharing, feed, and browser extension
           </li>
           <li>
             <Link href="/project/pacer" className="text-blue-600 dark:text-blue-400 underline">
