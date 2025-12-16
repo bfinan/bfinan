@@ -1,14 +1,15 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 
 type Mode = "CLASSIC" | "PACE";
 
 const DEFAULT_READ = "";
 const DEFAULT_MEASUREMENT = "page";
-const DEFAULT_START = "13";
+const DEFAULT_START = "1";
 const DEFAULT_MODE: Mode = "CLASSIC";
-const DEFAULT_PACE = 1.5;
+const DEFAULT_PACE = 1;
 
 export default function PacerPage() {
   const [book, setBook] = useState("");
@@ -30,6 +31,11 @@ export default function PacerPage() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const displayIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
+
+  // Helper function to format measurement unit for display in active reading mode
+  const getDisplayUnit = () => {
+    return measurement === "percent" ? "%" : measurement;
+  };
 
   // Load cached values from localStorage on mount
   useEffect(() => {
@@ -119,17 +125,57 @@ export default function PacerPage() {
     e.preventDefault();
 
     const start = parseFloat(pageStart);
+    
+    // Validate percent values
+    if (measurement === "percent") {
+      if (start < 0 || start > 100) {
+        alert("Starting percent must be between 0 and 100");
+        return;
+      }
+    }
+    
     let calculatedPaceValue = 0;
     let calculatedEnd = 0;
 
     if (mode === "CLASSIC") {
       const end = parseFloat(pageEnd);
-      const totalPages = end - start + 1;
+      
+      // Validate percent values
+      if (measurement === "percent") {
+        if (end < 0 || end > 100) {
+          alert("Ending percent must be between 0 and 100");
+          return;
+        }
+        if (end < start) {
+          alert("Ending percent must be greater than or equal to starting percent");
+          return;
+        }
+      }
+      
+      // For discrete units (pages, locations, units), add 1 to include both start and end
+      // For continuous units (percent), don't add 1
+      const totalPages = measurement === "percent" ? end - start : end - start + 1;
       const mins = parseInt(minutes);
       calculatedPaceValue = totalPages / mins;
       calculatedEnd = end;
     } else if (mode === "PACE") {
       const paceValue = parseFloat(pace);
+      
+      // Validate percent values
+      if (measurement === "percent") {
+        // Pace represents percent per minute, so it can be > 100 if duration is short enough
+        // Only validate that the calculated end doesn't exceed 100%
+        const calculatedEndValue = start + paceValue * parseInt(minutes);
+        if (calculatedEndValue > 100) {
+          alert("The calculated ending percent would exceed 100. Please adjust your pace or duration.");
+          return;
+        }
+        if (paceValue < 0) {
+          alert("Pace must be greater than or equal to 0");
+          return;
+        }
+      }
+      
       const mins = parseInt(minutes);
       calculatedPaceValue = paceValue;
       calculatedEnd = start + paceValue * mins;
@@ -181,8 +227,22 @@ export default function PacerPage() {
 
   const handleRestart = () => {
     handleReset();
-    // Restart the form
-    window.location.reload();
+    // Reset form to cached/default values without reloading the page (works offline)
+    const cachedRead = localStorage.getItem("pacer_read") || DEFAULT_READ;
+    const cachedMeasurement = localStorage.getItem("pacer_measurement") || DEFAULT_MEASUREMENT;
+    const cachedStart = localStorage.getItem("pacer_start") || DEFAULT_START;
+    const cachedMode = (localStorage.getItem("pacer_mode") || DEFAULT_MODE) as Mode;
+    const cachedPace = localStorage.getItem("pacer_pace") || DEFAULT_PACE.toString();
+
+    setBook(cachedRead);
+    setMeasurement(cachedMeasurement);
+    setPageStart(cachedStart);
+    setMode(cachedMode);
+    setPace(cachedPace);
+    setPageEnd("");
+    setMinutes("");
+    setCalculatedPace(0);
+    setCalculatedPageEnd(0);
   };
 
   if (isRunning || isComplete) {
@@ -193,10 +253,10 @@ export default function PacerPage() {
           
           <div className="mb-8">
             <p className="text-xl mb-2">
-              {pageStart} - {Math.round(calculatedPageEnd)} {measurement}s
+              {measurement === "percent" ? `${pageStart}% - ${Math.round(calculatedPageEnd)}%` : `${pageStart} - ${Math.round(calculatedPageEnd)} ${getDisplayUnit()}s`}
             </p>
             <p className="text-2xl font-bold mb-4">
-              Now reading {measurement} {Math.round(currentLocation)}
+              {measurement === "percent" ? `Now reading ${Math.round(currentLocation)}%` : `Now reading ${getDisplayUnit()} ${Math.round(currentLocation)}`}
             </p>
             <p className="text-lg text-gray-600 dark:text-gray-400">
               {currentMinute}:{currentSeconds.toString().padStart(2, "0")} / {minutes}:00
@@ -219,10 +279,12 @@ export default function PacerPage() {
               <div className="bg-green-100 dark:bg-green-900 p-4 rounded-lg mb-4">
                 <p className="text-lg font-semibold mb-2">Reading Complete!</p>
                 <p>
-                  Read {book} from {measurement} {pageStart} to {measurement} {Math.round(calculatedPageEnd)} in {minutes} minutes
+                  {measurement === "percent" 
+                    ? `Read ${book} from ${pageStart}% to ${Math.round(calculatedPageEnd)}% in ${minutes} minutes`
+                    : `Read ${book} from ${getDisplayUnit()} ${pageStart} to ${getDisplayUnit()} ${Math.round(calculatedPageEnd)} in ${minutes} minutes`}
                 </p>
                 <p className="mt-2">
-                  Your pace was {Math.round(calculatedPace)} {measurement}s per minute
+                  Your pace was {Math.round(calculatedPace)}{measurement === "percent" ? "%" : ` ${getDisplayUnit()}s`} per minute
                 </p>
               </div>
               <div className="space-x-4">
@@ -280,26 +342,42 @@ export default function PacerPage() {
             >
               <option value="page">page</option>
               <option value="location">location</option>
+              <option value="percent">percent (%)</option>
               <option value="unit">unit</option>
             </select>
           </div>
 
           <div>
-            <label htmlFor="mode" className="block text-sm font-medium mb-2">
+            <label className="block text-sm font-medium mb-2">
               Select mode
             </label>
-            <select
-              id="mode"
-              value={mode}
-              onChange={(e) => setMode(e.target.value as Mode)}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-            >
-              <option value="CLASSIC">CLASSIC</option>
-              <option value="PACE">PACE</option>
-            </select>
+            <div className="inline-flex rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 p-1.5">
+              <button
+                type="button"
+                onClick={() => setMode("CLASSIC")}
+                className={`px-6 py-3 rounded-md text-base font-semibold transition-colors ${
+                  mode === "CLASSIC"
+                    ? "bg-blue-600 text-white"
+                    : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                }`}
+              >
+                CLASSIC
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode("PACE")}
+                className={`px-6 py-3 rounded-md text-base font-semibold transition-colors ${
+                  mode === "PACE"
+                    ? "bg-blue-600 text-white"
+                    : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                }`}
+              >
+                PACE
+              </button>
+            </div>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               {mode === "CLASSIC"
-                ? `Enter starting ${measurement || "unit"}, ending ${measurement || "unit"}, and how long you want to read. The pace will be calculated`
+                ? `Enter starting ${measurement || "unit"}, ending ${measurement || "unit"}, and how long you want to read. The pace will be provided for you`
                 : "Enter a pace and read for a set amount of time"}
             </p>
           </div>
@@ -315,6 +393,8 @@ export default function PacerPage() {
               onChange={(e) => setPageStart(e.target.value)}
               placeholder={DEFAULT_START}
               step="0.01"
+              min={measurement === "percent" ? "0" : undefined}
+              max={measurement === "percent" ? "100" : undefined}
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
               required
             />
@@ -332,6 +412,8 @@ export default function PacerPage() {
                   value={pageEnd}
                   onChange={(e) => setPageEnd(e.target.value)}
                   step="0.01"
+                  min={measurement === "percent" ? "0" : undefined}
+                  max={measurement === "percent" ? "100" : undefined}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                   required
                 />
@@ -366,6 +448,7 @@ export default function PacerPage() {
                   onChange={(e) => setPace(e.target.value)}
                   placeholder={DEFAULT_PACE.toString()}
                   step="0.1"
+                  min={measurement === "percent" ? "0" : undefined}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                   required
                 />
@@ -411,6 +494,12 @@ export default function PacerPage() {
             Start Reading
           </button>
         </form>
+
+        <div style={{ marginTop: "2rem", textAlign: "center" }}>
+          <Link href="/" className="text-blue-600 dark:text-blue-400 underline">
+            Back to home
+          </Link>
+        </div>
       </div>
     </div>
   );
