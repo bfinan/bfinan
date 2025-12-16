@@ -56,7 +56,7 @@ export default function SoftwarePage() {
       </div>
 
       <div style={{ marginTop: "2rem", maxWidth: 500 }}>
-        <h2 style={{ fontSize: "1.3rem" }}>My Development</h2>
+        <h2 style={{ fontSize: "1.3rem" }}>My Software Development</h2>
         <p style={{ fontSize: "1.1rem", marginBottom: "2rem" }}>
           I'm a software developer by trade. The first language I learned was Python, and Python is still the language I use the most and recommend for beginners and experts alike. I also have professional experience with C#/.NET, Java, and Bash. You can read more about my experience on my <Link href="https://www.linkedin.com/in/brendan-finan-77a09ab3/" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 underline">LinkedIn</Link>.
         </p>
