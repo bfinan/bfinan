@@ -152,7 +152,9 @@ export default function PacerPage() {
         }
       }
       
-      const totalPages = end - start + 1;
+      // For discrete units (pages, locations, units), add 1 to include both start and end
+      // For continuous units (percent), don't add 1
+      const totalPages = measurement === "percent" ? end - start : end - start + 1;
       const mins = parseInt(minutes);
       calculatedPaceValue = totalPages / mins;
       calculatedEnd = end;
@@ -161,13 +163,15 @@ export default function PacerPage() {
       
       // Validate percent values
       if (measurement === "percent") {
-        if (paceValue < 0 || paceValue > 100) {
-          alert("Pace percent must be between 0 and 100");
-          return;
-        }
+        // Pace represents percent per minute, so it can be > 100 if duration is short enough
+        // Only validate that the calculated end doesn't exceed 100%
         const calculatedEndValue = start + paceValue * parseInt(minutes);
         if (calculatedEndValue > 100) {
           alert("The calculated ending percent would exceed 100. Please adjust your pace or duration.");
+          return;
+        }
+        if (paceValue < 0) {
+          alert("Pace must be greater than or equal to 0");
           return;
         }
       }
@@ -445,7 +449,6 @@ export default function PacerPage() {
                   placeholder={DEFAULT_PACE.toString()}
                   step="0.1"
                   min={measurement === "percent" ? "0" : undefined}
-                  max={measurement === "percent" ? "100" : undefined}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                   required
                 />
