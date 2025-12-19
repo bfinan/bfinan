@@ -2,15 +2,17 @@
 import js from "@eslint/js";
 import globals from "globals";
 import tseslint from "typescript-eslint";
-import next from "eslint-config-next";
+import nextPlugin from "@next/eslint-plugin-next";
+import reactPlugin from "eslint-plugin-react";
 
 export default [
   js.configs.recommended,
-  ...next(),
+  nextPlugin.flatConfig.coreWebVitals,
+  reactPlugin.configs.flat.recommended,
   ...tseslint.configs.recommended,
   {
     files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
-    languageOptions: { globals: globals.browser },
+    languageOptions: { globals: { ...globals.browser, ...globals.node } },
     rules: {
       "react/no-unescaped-entities": "off",
       "react/react-in-jsx-scope": "off"
