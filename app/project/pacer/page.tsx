@@ -11,6 +11,10 @@ const DEFAULT_START = "1";
 const DEFAULT_MODE: Mode = "CLASSIC";
 const DEFAULT_PACE = 1;
 
+type WindowWithWebkitAudioContext = Window & {
+  webkitAudioContext?: typeof AudioContext;
+};
+
 export default function PacerPage() {
   const [book, setBook] = useState("");
   const [measurement, setMeasurement] = useState("");
@@ -56,7 +60,11 @@ export default function PacerPage() {
   const beep = () => {
     try {
       if (!audioContextRef.current) {
-        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const AudioContextCtor =
+          window.AudioContext ||
+          (window as WindowWithWebkitAudioContext).webkitAudioContext;
+        if (!AudioContextCtor) return;
+        audioContextRef.current = new AudioContextCtor();
       }
       const ctx = audioContextRef.current;
       const oscillator = ctx.createOscillator();
