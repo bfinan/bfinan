@@ -1,13 +1,12 @@
 ---
 title: Hello World
 date: 2025-12-03
-summary: Just a test note to confirm it renders.
+summary: test note.
 ---
 
 # Hello from Markdown
 
-This note is being rendered from **res/notes/hello-world.md**.
+Rendered from **res/notes/hello-world.md**.
 
-- Works with GFM
-- Works with headings
-- Works with lists
+- list item 1
+- list item 2
