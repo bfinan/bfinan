@@ -4,7 +4,7 @@ date: 2025-12-03
 summary: test note.
 ---
 
-# Hello from Markdown
+# Test note
 
 Rendered from **res/notes/hello-world.md**.
 

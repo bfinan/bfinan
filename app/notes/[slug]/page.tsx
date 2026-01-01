@@ -1,5 +1,6 @@
 // app/notes/[slug]/page.tsx
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { getAllNotesMeta, getNoteBySlug } from "@/lib/notes";
 
 export const dynamic = "force-static";
@@ -35,6 +36,12 @@ export default async function NotePage({ params }: Props) {
           dangerouslySetInnerHTML={{ __html: contentHtml }}
         />
       </article>
+
+      <div style={{ marginTop: "2rem", textAlign: "center" }}>
+        <Link href="/notes" className="text-blue-600 dark:text-blue-400 underline">
+          Back to notes
+        </Link>
+      </div>
     </main>
   );
 }

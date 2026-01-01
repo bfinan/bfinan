@@ -16,13 +16,13 @@ export default function Home() {
       }}
     >
       <h1 className="text-3xl sm:text-4xl">Brendan Finan</h1>
-      <h2 className="px-2 sm:px-0 max-w-2xl">I&apos;m a <Link href="/software" className="text-blue-600 dark:text-blue-400 underline">software developer</Link> and <Link href="/run" className="text-blue-600 dark:text-blue-400 underline">runner</Link>, currently based in Des Moines, Iowa.</h2>
-      <p style={{ fontSize: "1.1rem", marginTop: "1rem" }}>
+      <h2 className="px-2 sm:px-0 max-w-2xl" style={{ fontSize: "1.1rem" }}>I&apos;m a <Link href="/software" className="text-blue-600 dark:text-blue-400 underline">software developer</Link> and <Link href="/run" className="text-blue-600 dark:text-blue-400 underline">runner</Link>, currently based in Des Moines, Iowa.</h2>
+      <p style={{ marginTop: "1rem" }}>
         Here&apos;s what I&apos;m working on{" "}
-        <a href="/now" className="text-blue-600 dark:text-blue-400 underline">
+        <Link href="/now" className="text-blue-600 dark:text-blue-400 underline">
           now
-        </a>
-        .
+        </Link>
+        . I also publish some very unpolished <Link href="/notes" className="text-blue-600 dark:text-blue-400 underline">notes</Link> if that interests you.
       </p>
       {/* Social links block */}
       <div style={{ marginTop: "2rem", fontSize: "1.1rem" }}>
@@ -76,7 +76,7 @@ export default function Home() {
             rel="noopener noreferrer"
             className="text-blue-600 dark:text-blue-400 underline"
           >
-            Manifold Markets
+            Manifold
           </a>
         </div>
       </div>
