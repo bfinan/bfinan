@@ -36,6 +36,13 @@ export default function PacerPage() {
   const displayIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
 
+  const SETTINGS_STORAGE_KEY = "pacer_settings_v1";
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [cueSoundEnabled, setCueSoundEnabled] = useState(true);
+  const [flashCueEnabled, setFlashCueEnabled] = useState(false);
+  const [isFlashActive, setIsFlashActive] = useState(false);
+  const flashTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   // Helper function to format measurement unit for display in active reading mode
   const getDisplayUnit = () => {
     return measurement === "percent" ? "%" : measurement;
@@ -54,10 +61,33 @@ export default function PacerPage() {
     setPageStart(cachedStart);
     setMode(cachedMode);
     setPace(cachedPace);
+
+    // Load settings (no cookies; browser storage only)
+    try {
+      const raw = localStorage.getItem(SETTINGS_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as Partial<{
+          cueSoundEnabled: boolean;
+          flashCueEnabled: boolean;
+        }>;
+        if (typeof parsed.cueSoundEnabled === "boolean") setCueSoundEnabled(parsed.cueSoundEnabled);
+        if (typeof parsed.flashCueEnabled === "boolean") setFlashCueEnabled(parsed.flashCueEnabled);
+      }
+    } catch (error) {
+      console.warn("Failed to load pacer settings:", error);
+    }
   }, []);
 
-  // Beep function using Web Audio API
-  const beep = () => {
+  const saveSettings = (next: { cueSoundEnabled: boolean; flashCueEnabled: boolean }) => {
+    try {
+      localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(next));
+    } catch (error) {
+      console.warn("Failed to save pacer settings:", error);
+    }
+  };
+
+  // Cue sound function using Web Audio API (enabled by default)
+  const playCueSound = () => {
     try {
       if (!audioContextRef.current) {
         const AudioContextCtor =
@@ -82,9 +112,44 @@ export default function PacerPage() {
       oscillator.start(ctx.currentTime);
       oscillator.stop(ctx.currentTime + 0.5);
     } catch (error) {
-      console.error("Error playing beep:", error);
+      console.error("Error playing cue sound:", error);
     }
   };
+
+  const getFlashColor = () => {
+    // Dark theme flash: pure white; Light theme flash: grass green (bright, slightly darker than RGB green)
+    const prefersDark =
+      typeof window !== "undefined" &&
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    return prefersDark ? "#ffffff" : "#32CD32";
+  };
+
+  const triggerFlashCue = () => {
+    if (flashTimeoutRef.current) clearTimeout(flashTimeoutRef.current);
+    setIsFlashActive(true);
+    flashTimeoutRef.current = setTimeout(() => {
+      setIsFlashActive(false);
+    }, 500);
+  };
+
+  const triggerCue = (pattern: "single" | "double" = "single") => {
+    if (cueSoundEnabled) playCueSound();
+    if (flashCueEnabled) triggerFlashCue();
+
+    if (pattern === "double") {
+      setTimeout(() => {
+        if (cueSoundEnabled) playCueSound();
+        if (flashCueEnabled) triggerFlashCue();
+      }, 300);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (flashTimeoutRef.current) clearTimeout(flashTimeoutRef.current);
+    };
+  }, []);
 
   // Display update timer (updates every second)
   useEffect(() => {
@@ -98,8 +163,7 @@ export default function PacerPage() {
           setIsComplete(true);
           setCurrentMinute(parseInt(minutes));
           setCurrentSeconds(0);
-          beep();
-          setTimeout(() => beep(), 300);
+          triggerCue("double");
           return;
         }
 
@@ -120,12 +184,12 @@ export default function PacerPage() {
         }
       };
     }
-  }, [isRunning, startTime, minutes, pageStart, calculatedPace]);
+  }, [isRunning, startTime, minutes, pageStart, calculatedPace, cueSoundEnabled, flashCueEnabled]);
 
-  // Beep timer (beeps every minute, but not at the start)
+  // Cue timer (cues every minute, but not at the start)
   useEffect(() => {
     if (isRunning && currentMinute > 0 && currentSeconds === 0 && currentMinute < parseInt(minutes)) {
-      beep();
+      triggerCue("single");
     }
   }, [currentMinute, isRunning, minutes]);
 
@@ -255,8 +319,47 @@ export default function PacerPage() {
 
   if (isRunning || isComplete) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-4">
-        <div className="max-w-2xl w-full text-center">
+      <div className="min-h-screen flex flex-col items-center justify-center px-4 relative">
+        {/* Flash cue overlay (background only) */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed inset-0 transition-opacity duration-300"
+          style={{
+            backgroundColor: getFlashColor(),
+            opacity: isFlashActive ? 1 : 0,
+          }}
+        />
+
+        <div className="max-w-2xl w-full text-center relative">
+          {/* Settings button (active reading only) */}
+          <button
+            type="button"
+            onClick={() => setIsSettingsOpen(true)}
+            aria-label="Open pacer settings"
+            className="absolute right-0 top-0 inline-flex items-center justify-center h-10 w-10 rounded-full border border-gray-300 dark:border-gray-700 bg-white/90 dark:bg-gray-900/90 backdrop-blur hover:bg-gray-50 dark:hover:bg-gray-800"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"
+                stroke="currentColor"
+                strokeWidth="1.8"
+              />
+              <path
+                d="M19.4 15a8.2 8.2 0 0 0 .1-1l2-1.6-2-3.4-2.5 1a7.3 7.3 0 0 0-1.7-1l-.4-2.7h-4l-.4 2.7a7.3 7.3 0 0 0-1.7 1l-2.5-1-2 3.4 2 1.6a8.2 8.2 0 0 0 .1 1 8.2 8.2 0 0 0-.1 1L2.4 17.6l2 3.4 2.5-1a7.3 7.3 0 0 0 1.7 1l.4 2.7h4l.4-2.7a7.3 7.3 0 0 0 1.7-1l2.5 1 2-3.4-2-1.6c.1-.3.1-.7.1-1Z"
+                stroke="currentColor"
+                strokeWidth="1.2"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+
           <h1 className="text-3xl sm:text-4xl mb-6">Reading {book}</h1>
           
           <div className="mb-8">
@@ -312,6 +415,102 @@ export default function PacerPage() {
             </div>
           )}
         </div>
+
+        {/* Settings modal (does not pause timer/pacer) */}
+        {isSettingsOpen && (
+          <div className="fixed inset-0 z-50">
+            <button
+              type="button"
+              aria-label="Close settings"
+              className="absolute inset-0 bg-black/40"
+              onClick={() => setIsSettingsOpen(false)}
+            />
+            <div className="absolute left-1/2 top-1/2 w-[min(92vw,560px)] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-xl">
+              <div className="flex items-start justify-between gap-4 mb-4">
+                <div>
+                  <h2 className="text-xl font-semibold">Settings</h2>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    Preferences are saved on this device.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsSettingsOpen(false)}
+                  className="h-9 w-9 rounded-full border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800"
+                  aria-label="Close settings"
+                >
+                  ×
+                </button>
+              </div>
+
+              <div className="space-y-5">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <div className="font-semibold">Cue sound</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                      Placeholder description: Enable an audio cue on each pace interval.
+                    </div>
+                  </div>
+                  <label className="inline-flex items-center cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={cueSoundEnabled}
+                      onChange={(e) => {
+                        const next = { cueSoundEnabled: e.target.checked, flashCueEnabled };
+                        setCueSoundEnabled(next.cueSoundEnabled);
+                        saveSettings(next);
+                      }}
+                    />
+                    <span
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        cueSoundEnabled ? "bg-blue-600" : "bg-gray-300 dark:bg-gray-700"
+                      }`}
+                    >
+                      <span
+                        className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
+                          cueSoundEnabled ? "translate-x-5" : "translate-x-1"
+                        }`}
+                      />
+                    </span>
+                  </label>
+                </div>
+
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <div className="font-semibold">Flash cue</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                      Placeholder description: Flash the background when a cue happens.
+                    </div>
+                  </div>
+                  <label className="inline-flex items-center cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={flashCueEnabled}
+                      onChange={(e) => {
+                        const next = { cueSoundEnabled, flashCueEnabled: e.target.checked };
+                        setFlashCueEnabled(next.flashCueEnabled);
+                        saveSettings(next);
+                      }}
+                    />
+                    <span
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                        flashCueEnabled ? "bg-blue-600" : "bg-gray-300 dark:bg-gray-700"
+                      }`}
+                    >
+                      <span
+                        className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
+                          flashCueEnabled ? "translate-x-5" : "translate-x-1"
+                        }`}
+                      />
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
