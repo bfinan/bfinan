@@ -22,7 +22,7 @@ export default function Home() {
         <Link href="/now" className="text-blue-600 dark:text-blue-400 underline">
           now
         </Link>
-        . I also publish some very unpolished <Link href="/notes" className="text-blue-600 dark:text-blue-400 underline">notes</Link> if that interests you.
+        .
       </p>
       {/* Social links block */}
       <div style={{ marginTop: "2rem", fontSize: "1.1rem" }}>
