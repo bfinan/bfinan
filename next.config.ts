@@ -24,6 +24,18 @@ const nextConfig: NextConfig = {
           "https://docs.google.com/presentation/d/1yVI5SPjlClHibWxxIhnNt6Cls7uRDu3X_CjUJyQEgzU/edit?usp=sharing",
         permanent: true,
       },
+      {
+        source: "/sbz2",
+        destination:
+          "https://docs.google.com/presentation/d/1eXls4AbhW9135FJANsnY93iENXmjer1JvCSvltzKSuc/",
+        permanent: true,
+      },
+      {
+        source: "/SBZ2",
+        destination:
+          "https://docs.google.com/presentation/d/1eXls4AbhW9135FJANsnY93iENXmjer1JvCSvltzKSuc/",
+        permanent: true,
+      },
     ];
   },
 };
